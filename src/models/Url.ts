@@ -3,6 +3,7 @@ import z from "zod";
 export const UrlEntitySchema = z.object({
     id: z.uuid(),
     url: z.string(),
+    user: z.uuid(),
     short: z.string(),
     clicks: z.int(),
     expired: z.boolean(),
