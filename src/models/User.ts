@@ -2,18 +2,20 @@ import z from "zod";
 
 export const UserEntitySchema = z.object({
     id: z.uuid(),
-    name: z.string(),
-    email: z.email(),
-    password: z.string()
+    name: z.string().min(2, "Nome invalido"),
+    email: z.email("email invalido"),
+    password: z.string(),
+    createdAt: z.date()
 })
 
 export const UserRegisterSchemaDto = UserEntitySchema.omit({
-    id: true
+    id: true,
+    createdAt: true
 }).extend({
     password: z.string().min(6, "A senha deve ter no minimo 6 caracteres.")
 })
 
-export const UserUpdateSchemaDto = UserEntitySchema.partial()
+export const UserUpdateSchemaDto = UserRegisterSchemaDto.partial()
 
 export const UserLoginSchemaDto = UserEntitySchema.pick({
     email: true,
