@@ -1,5 +1,5 @@
 import { prisma } from "../../lib/prisma.js";
-import { UserResponseSchemaDto, type UserRegisterDTO, type UserResponseDTO, type UserUpdateDTO } from "../../models/User.js";
+import { UserEntitySchema, UserResponseSchemaDto, type UserRegisterDTO, type UserResponseDTO, type UserUpdateDTO } from "../../models/User.js";
 import type { Repository } from "../Repository.js";
 
 export class UserRepository implements Repository<UserRegisterDTO, UserResponseDTO> {
@@ -33,6 +33,13 @@ export class UserRepository implements Repository<UserRegisterDTO, UserResponseD
             where: {id}
         })
         return UserResponseSchemaDto.parse(user)
+    }
+
+    async findByEmail(email: string) {
+        const userFound = await prisma.user.findUnique({
+            where: {email}
+        })
+        return UserEntitySchema.parse(userFound)
     }
 
     async delete(id: string) {

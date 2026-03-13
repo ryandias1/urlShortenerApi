@@ -1,5 +1,5 @@
 import type { Repository } from "../Repository.js";
-import { UrlCreate, UrlCreateDTO, UrlExpiredDTO, UrlResponseDTO, UrlResponseSchemaDto } from "../../models/Url.js"
+import { UrlResponseSchemaDto, UrlStatsResponseSchemaDto, type UrlCreate, type UrlResponseDTO, type UrlStatsResponseDTO} from "../../models/Url.js"
 import {prisma} from "../../lib/prisma.js"
 
 export class UrlRepository implements Repository<UrlCreate, UrlResponseDTO> {
@@ -23,7 +23,7 @@ export class UrlRepository implements Repository<UrlCreate, UrlResponseDTO> {
                 active: false
             }
         })
-        return UrlResponseSchemaDto.parse(urlUpdated)
+        return UrlStatsResponseSchemaDto.parse(urlUpdated)
     }
 
     async updateClicks(id: string) {
@@ -32,24 +32,32 @@ export class UrlRepository implements Repository<UrlCreate, UrlResponseDTO> {
             data: {
                 clicks: {
                     increment: 1
-                }
+                },
+                lastClicked: new Date()
             }
         })
-        return UrlResponseSchemaDto.parse(urlUpdated)
+        return UrlStatsResponseSchemaDto.parse(urlUpdated)
     }
 
     async findById(id: string) {
         const urlFound = await prisma.url.findUnique({
             where: {id}
         })
-        return UrlResponseSchemaDto.parse(urlFound)        
+        return UrlStatsResponseSchemaDto.parse(urlFound)        
+    }
+
+    async findByShort(short: string) {
+        const urlFound = await prisma.url.findUnique({
+            where: {short}
+        })
+        return urlFound
     }
 
     async findAllByUserId(userId: string) {
         const users = await prisma.url.findMany({
             where: {userId}
         })
-        return users as UrlResponseDTO[]
+        return users as UrlStatsResponseDTO[]
     }
 
     async delete(id: string) {
