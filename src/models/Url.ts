@@ -7,7 +7,8 @@ export const UrlEntitySchema = z.object({
     userId: z.uuid(),
     clicks: z.number().int(),
     active: z.boolean(),
-    createdAt: z.date()
+    createdAt: z.date(),
+    lastClicked: z.date()
 })
 
 export const UrlCreateSchemaDto = UrlEntitySchema.pick({
@@ -29,6 +30,7 @@ export const UrlClickedSchemaDto = UrlEntitySchema.pick({
 })
 
 export const UrlResponseSchemaDto = UrlEntitySchema.pick({
+    id: true,
     short: true,
     url: true
 })
