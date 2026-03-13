@@ -30,8 +30,9 @@ model Url {
   short String @unique
   userId String
   clicks Int
-  active Boolean @default(false)
+  active Boolean @default(true)
   createdAt DateTime @default(now())
+  lastClicked DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id])
 }
