@@ -29,7 +29,7 @@ model Url {
   url String
   short String @unique
   userId String
-  clicks Int
+  clicks Int @default(0)
   active Boolean @default(true)
   createdAt DateTime @default(now())
   lastClicked DateTime @default(now())

@@ -7,7 +7,6 @@ export class UrlRepository implements Repository<UrlCreate, UrlResponseDTO> {
         const { url, short, userId } = data
         const urlEntity = await prisma.url.create({
             data: {
-                clicks: 0,
                 url,
                 short,
                 userId
