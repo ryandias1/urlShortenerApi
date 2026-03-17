@@ -1,4 +1,5 @@
 import type { UrlCreate, UrlCreateDTO } from "../models/Url.js";
+import { redisClient } from "../repository/cache/Redis.js";
 import type { UrlRepository } from "../repository/implementations/UrlRepository.js";
 import { nanoid } from "nanoid"
 
@@ -24,24 +25,29 @@ export class UrlService {
     }
 
     async redirect(short: string) {
+        const isCached = await redisClient.get(short)
+        if (isCached) return isCached
         const longUrl = await this.urlRepository.findByShort(short)
         if (!longUrl) throw new Error("Url não existe")
         if(!longUrl.active) throw new Error("Url expirada")
+        await redisClient.set(longUrl.short, longUrl.url, {
+            EX: 60
+        })
         await this.urlRepository.updateClicks(longUrl.id)
         const {url} = longUrl
         return url
     }
 
-    async expired(userId: string, id: string) {
-        const url = await this.urlRepository.findById(id)
+    async expired(userId: string, short: string) {
+        const url = await this.urlRepository.findByShort(short)
         if (!url) throw new Error("Url não existe")
         if (userId !== url.userId) throw new Error("Url não existe")
-        const urlExpired = await this.urlRepository.updateExpired(id)
+        const urlExpired = await this.urlRepository.updateExpired(url.id)
         return urlExpired
     }
 
-    async getUrlStats(userId: string, id: string) {
-        const url = await this.urlRepository.findById(id)
+    async getUrlStats(userId: string, short: string) {
+        const url = await this.urlRepository.findByShort(short)
         if (!url) throw new Error("Url não existe")
         if (userId !== url.userId) throw new Error("Url não existe")
         return url
