@@ -2,9 +2,13 @@ import express from "express"
 import "dotenv/config"
 import { userRoutes } from "./routes/UserRoutes.js"
 import { urlRoutes } from "./routes/UrlRoutes.js"
+import { connectRedis } from "./repository/cache/Redis.js"
 
 const app = express()
 const port = process.env.PORT
+
+await connectRedis()
+
 app.use(express.json())
 app.use("/user", userRoutes)
 app.use("/url", urlRoutes)
