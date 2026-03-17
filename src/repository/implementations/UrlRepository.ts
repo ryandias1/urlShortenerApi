@@ -50,7 +50,7 @@ export class UrlRepository implements Repository<UrlCreate, UrlResponseDTO> {
         const urlFound = await prisma.url.findUnique({
             where: {short}
         })
-        return UrlStatsResponseSchemaDto.parse(urlFound)
+        return urlFound
     }
 
     async findAllByUserId(userId: string) {
