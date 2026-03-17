@@ -1,10 +1,13 @@
+import type { RedisClientType } from "redis";
 import type { UrlCreate, UrlCreateDTO } from "../models/Url.js";
-import { redisClient } from "../repository/cache/Redis.js";
 import type { UrlRepository } from "../repository/implementations/UrlRepository.js";
 import { nanoid } from "nanoid"
 
 export class UrlService {
-    constructor(private readonly urlRepository: UrlRepository) {}
+    constructor(
+        private readonly urlRepository: UrlRepository,
+        private readonly redisClient: RedisClientType
+    ) {}
 
     async create(userId: string, data: UrlCreateDTO) {
         const {url} = data
@@ -25,12 +28,12 @@ export class UrlService {
     }
 
     async redirect(short: string) {
-        const isCached = await redisClient.get(short)
+        const isCached = await this.redisClient.get(short)
         if (isCached) return isCached
         const longUrl = await this.urlRepository.findByShort(short)
         if (!longUrl) throw new Error("Url não existe")
         if(!longUrl.active) throw new Error("Url expirada")
-        await redisClient.set(longUrl.short, longUrl.url, {
+        await this.redisClient.set(longUrl.short, longUrl.url, {
             EX: 60
         })
         await this.urlRepository.updateClicks(longUrl.id)
@@ -57,6 +60,4 @@ export class UrlService {
         const urls = await this.urlRepository.findAllByUserId(userId)
         return urls
     }
-
-
 }

@@ -1,9 +1,9 @@
-import { createClient } from 'redis';
+import { createClient, type RedisClientType } from 'redis';
 import "dotenv/config"
 
 const redisUrl = process.env.REDIS_URL
 
-const redisClient = createClient({
+const redisClient: RedisClientType = createClient({
     url: redisUrl
 });
 
