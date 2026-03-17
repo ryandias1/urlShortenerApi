@@ -10,5 +10,24 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  cache:
+    image: redis:latest
+    container_name: my-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass mysecretpassword
+
+  api:
+    container_name: api-shorten
+    build: ./
+    restart: always
+    ports:
+      - "3003:3003"
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+      - cache
 volumes:
   postgres_data:
