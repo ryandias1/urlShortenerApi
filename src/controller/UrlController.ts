@@ -22,19 +22,19 @@ export class UrlController {
 
     async expired(req: Request, res: Response) {
         const {userId} = res.locals
-        const id = req.params.id
-        if (!id) res.status(404).json({"message": "Url inexistente"})
-        if (!id || typeof id !== 'string') return res.status(404).json({ "message": "Url inexistente" })
-        const url = await this.urlService.expired(userId, id)
+        const short = req.params.short
+        if (!short) res.status(404).json({"message": "Url inexistente"})
+        if (!short || typeof short !== 'string') return res.status(404).json({ "message": "Url inexistente" })
+        const url = await this.urlService.expired(userId, short)
         return res.status(200).json(url)
     }
 
     async getUrlStats(req: Request, res: Response) {
         const {userId} = res.locals
-        const id = req.params.id
-        if (!id) res.status(404).json({"message": "Url inexistente"})
-        if (!id || typeof id !== 'string') return res.status(404).json({ "message": "Url inexistente" })
-        const urlStats = await this.urlService.getUrlStats(userId, id)
+        const short = req.params.short
+        if (!short) res.status(404).json({"message": "Url inexistente"})
+        if (!short || typeof short !== 'string') return res.status(404).json({ "message": "Url inexistente" })
+        const urlStats = await this.urlService.getUrlStats(userId, short)
         return res.status(200).json(urlStats)
     }
 
