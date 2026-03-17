@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx --watch src/server.ts",
-    "docker": "docker compose up -d"
+    "docker": "docker compose up -d",
+    "build": "tsc",
+    "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +19,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.4.0",
     "@types/pg": "^8.18.0",
+    "@types/redis": "^4.0.10",
     "prisma": "^7.4.2",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
@@ -30,6 +33,7 @@
     "jsonwebtoken": "^9.0.3",
     "nanoid": "^5.1.6",
     "pg": "^8.20.0",
+    "redis": "^5.11.0",
     "zod": "^4.3.6"
   }
 }
